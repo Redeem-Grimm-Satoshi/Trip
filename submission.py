@@ -20,7 +20,7 @@ Run in EDIT MODE (see and modify code):
 import marimo
 
 __generated_with = "0.23.6"
-app = marimo.App(width="medium", app_title="WC 2026 Boston Crash Safety Guide")
+app = marimo.App(width="medium", app_title="WC 2026 Boston Planner")
 
 
 @app.cell(hide_code=True)
