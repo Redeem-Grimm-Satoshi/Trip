@@ -1887,9 +1887,13 @@ def _(folium, mo, requests, selected_match):
     # Static layers only — shapes (route geometry) and stops change rarely.
     # Live vehicles are handled by injected JS below, which polls the MBTA
     # API directly from the browser and tweens markers between positions.
-    # NOTE: MBTA /shapes doesn't populate the route relationship even with
-    # include=route, so we must fetch one route at a time to know which
-    # polyline belongs to which line.
+    # NOTE: /shapes emits no relationships at all on API versions >= 2020-05-01,
+    # and silently ignores include= (returns 200) rather than rejecting it with
+    # a 400 the way /stops and /trips do. So there is no route attribution in
+    # the payload: we fetch one route at a time and take the route id from the
+    # loop variable instead of the response. That same version change also
+    # dropped the `priority` attribute, so "longest polyline" is our stand-in
+    # for picking the canonical shape out of a route's many variants.
     _longest = {}
     for _rid in _ROUTES.keys():
         _route_shapes = _get("/shapes", {"filter[route]": _rid}).get("data", [])
